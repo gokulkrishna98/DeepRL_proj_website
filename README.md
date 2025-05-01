@@ -90,12 +90,12 @@ $$ \phi_\Gamma \triangleq \mathbb{E}\left[\gamma^H Q_\theta(z_{H}, a_{H}) + \sum
 where, 
 $a_t \sim \mathcal{N}(\mu_t^{j-1}, (\sigma_t^{j-1})^2I)$ 
 
-In a loop start with $N$ trajectories of horizon $H$ from $\mathcal{N}(\mu^{j-1}, (\sigma^{j-1})^2\bm{I})$ and $N_\pi$ trajectories for horizon $H$ from $\pi_\theta$ and $d_\theta$. Compute $\phi_\Gamma$ for the recorded $N+N_\pi$ trajectories, and get the top-$k$ trajectories notated here as $\Gamma^\star$. Compute $\mu^j, \sigma^j$ for the next iteration as
+In a loop start with $N$ trajectories of horizon $H$ from $\mathcal{N}(\mu^{j-1}, (\sigma^{j-1})^2I)$ and $N_\pi$ trajectories for horizon $H$ from $\pi_\theta$ and $d_\theta$. Compute $\phi_\Gamma$ for the recorded $N+N_\pi$ trajectories, and get the top-$k$ trajectories notated here as $\Gamma^\star$. Compute $\mu^j, \sigma^j$ for the next iteration as
+
+$$ \mu^j = \frac{\sum_{i=1}^k e^{\tau(\phi_{\Gamma^\star,i})} \Gamma_i^\star}{\sum_{i=1}^k e^{\tau(\phi_{\Gamma^\star, i})}} && \sigma^j = \sqrt{\max \left(\frac{\sum_{i=1}^k e^{\tau(\phi_{\Gamma^\star,i})} (\Gamma_i^\star - \mu^j)^2}{\sum_{i=1}^k e^{\tau(\phi_{\Gamma^\star, i})}}, \epsilon \right)}
 $$
-\begin{align*}
-    \mu^j = \frac{\sum_{i=1}^k e^{\tau(\phi_{\Gamma^\star,i})} \Gamma_i^\star}{\sum_{i=1}^k e^{\tau(\phi_{\Gamma^\star, i})}} && \sigma^j = \sqrt{\max \left(\frac{\sum_{i=1}^k e^{\tau(\phi_{\Gamma^\star,i})} (\Gamma_i^\star - \mu^j)^2}{\sum_{i=1}^k e^{\tau(\phi_{\Gamma^\star, i})}}, \epsilon \right)}
-\end{align*}
-$$
+
+
 where, $\epsilon$ is offset to prevent distribution collapse, which is linearly reduced over time to encourage exploration; $\tau$ is the temperature parameter used for soft weight update $\theta$ from $\theta^-$.
 
 #### TD Learning of Latent Dynamics
