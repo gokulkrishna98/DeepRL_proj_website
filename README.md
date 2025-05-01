@@ -75,11 +75,11 @@ Layout:
 In this approach we reimplement Temporal Difference Model Predictive Control (TDMPC) [@hansen2022temporaldifferencelearningmodel] which uses Model Predictive Path Control [@williams2015modelpredictivepathintegral] for planning and Temporal Difference 0 (TD0) to train the model. Unlike the method mentioned above the main advantage claimed by TDMPC is to learn embeddings from high dimensional pixel space without learning unnecessary details like shading.
 
 The model consists of
-- Q-value function estimate $Q_\theta(\bm{a}_t, \bm{s}_t)$.
-- Embedding network $h_\theta(\bm{s}_t) \to \bm{z}_t$ which converts the high dimensional input state $\bm{s}_t \in \mathcal{S}$ to the latent vector representation $\bm{z}_t \in \mathbb{R}^{l}$ where $l$ is the latent dimension.
-- Dynamics network $d_\theta(\bm{z}_t, \bm{a}_t)$ which predicts the next latent state vector $\bm{z}_{t+1}$ given the previous state vector $\bm{z}_t$.
-- Reward model $R_\theta(\bm{z}_t, \bm{a}_t)$ which approximates the reward model of environment.
-- Stochastic policy network $\pi_\theta(\bm{z}_t)$ which predicts a Gaussian distribution over the action space $\mathcal{A}$.
+- Q-value function estimate $Q_\theta(a_t, s_t)$.
+- Embedding network $h_\theta(s_t) \to z_t$ which converts the high dimensional input state $s_t \in \mathcal{S}$ to the latent vector representation $z_t \in \mathbb{R}^{l}$ where $l$ is the latent dimension.
+- Dynamics network $d_{\theta}(z_t, a_t)$ which predicts the next latent state vector $\bm{z}_{t+1}$ given the previous state vector $z_t$.
+- Reward model $R_{\theta}(z_t, a_t)$ which approximates the reward model of environment.
+- Stochastic policy network $\pi_{\theta}(z_t)$ which predicts a Gaussian distribution over the action space $\mathcal{A}$.
 
 #### Planning
 TD-MPC uses augmented version of Model Predictive Path Integral (MPPI) [@williams2015modelpredictivepathintegral]. In this planning procedure the action distribution over horizon of future moves is assumed to be a spherical Gaussian distribution with the policy network as a prior. The parameters ($\mu, \sigma$) are updated iteratively using an importance sampling of the top-k sampled trajectories which maximize the approximate $Q$-value. This equation is given as 
