@@ -105,12 +105,13 @@ where, $\epsilon$ is offset to prevent distribution collapse, which is linearly 
 
 #### TD Learning of Latent Dynamics
 The loss function used to learn the latent dynamics, Q-value function, and policy are given as
+
 $$
-\begin{align*}
-    \mathcal{J}(\theta;\Gamma) &= \sum_{i=t}^{t+H} \lambda^{i-t} \mathcal{L}(\theta;\Gamma_i)
-\end{align*}
+    \mathcal{J}(\theta;\Gamma) = \sum_{i=t}^{t+H} \lambda^{i-t} \mathcal{L}(\theta;\Gamma_i)
 $$
-where, $\lambda$ is a hyper parameter <!-- TODO: describe this loss function -->
+
+where, $\lambda$ is a hyper parameter
+
 $$
     \mathcal{L}(\theta;\Gamma) = (c_1\Vert  R_\theta(z_i, a_i) - r_i \Vert_2^2) + (c_2 \Vert Q_\theta(z_i, a_i) - (r_i + \gamma Q_{\theta^-}(z_{i+1}, \pi_\theta(z_{i+1}))) \Vert_2^2) + (c_3 \Vert d_\theta(z_i) - h_{\theta^-}(s_{i+1}) \Vert_2^2 )
 $$
