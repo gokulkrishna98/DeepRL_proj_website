@@ -176,7 +176,16 @@ Video of inference
 
 Loss curve  
 ![](./images/tdmpc_pend_loss_curve.png)
+
+
 - Atari (with discrete -> continuous modification)
+
+Video of inference:  
+![](./videos/tdmpc_atari.gif)
+![](./videos/tdmpc_atari_2.gif)
+
+Loss curve
+![](./images/tdmpc_atari_loss_curve.png)
 
 ## Observation and conclusions
 TODO: (We will do it on wednesday)
