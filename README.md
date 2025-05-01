@@ -112,12 +112,9 @@ $$
 $$
 where, $\lambda$ is a hyper parameter <!-- TODO: describe this loss function -->
 $$
-\begin{align*}
-    \mathcal{L}(\theta;\Gamma) &= \quad c_1\Vert  R_\theta(\bm{z}_i, \bm{a}_i) - r_i \Vert_2^2 & \text{(reward model loss)}\\
-    &\quad + c_2 \Vert Q_\theta(\bm{z}_i, \bm{a}_i) - (r_i + \gamma Q_{\theta^-}(\bm{z}_{i+1}, \pi_\theta(\bm{z}_{i+1}))) \Vert_2^2 & \text{(TD(0) loss)}\\
-    &\quad + c_3 \Vert d_\theta(\bm{z}_i) - h_{\theta^-}(\bm{s}_{i+1}) \Vert_2^2 & \text{(latent state consistency loss)}
-\end{align*}
+    \mathcal{L}(\theta;\Gamma) = (c_1\Vert  R_\theta(z_i, a_i) - r_i \Vert_2^2) + (c_2 \Vert Q_\theta(z_i, a_i) - (r_i + \gamma Q_{\theta^-}(z_{i+1}, \pi_\theta(z_{i+1}))) \Vert_2^2) + (c_3 \Vert d_\theta(z_i) - h_{\theta^-}(s_{i+1}) \Vert_2^2 )
 $$
+
 Observe that the latent consistency loss would allow the model to learn only the relevant dynamics without needing to reconstruct the observations.
 
 #### Implementation Details
