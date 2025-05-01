@@ -179,26 +179,33 @@ Loss curves
         ![](./images/gen_replay_TD(0)_horizon(5)_reward.png)
 
         Observations:
-        First we trained our TD-MPC model with a FIFO replay buffer, 
-
+        First we trained our TD-MPC model with a FIFO replay buffer with a buffer capacity of 150,000 episodes. If we look a the curve, we see that the performance is quite poor, the training loss are saturated at 15k steps and the eval rewards drop to -600, which is worse than random. 
+        <br/>If we look closely at the eval video, we can see in the start the lander hovers, but it degrades quickly. Our hypothesis is, since our replay buffer is filled using the states that our model predicts and since they use TD(0) this makes the model very short-sighted and this tight-coupling between the replay buffer and the model, makes the performance good for early steps but it degrades for later steps since our replay buffer is tightly coupled we never get those observations in the buffer, and the model performs poorly for later steps.
+        <br/>To verify this hypothesis of ours, we tried to train with TD(10) to increase the horizon, as well as we trained with larger seed steps to ensure that we have quality observations in the replay buffer.
+        Finally, we also wrote a priority-based replay buffer to encourage the model to train on less confident observations to have better exploration.
 
     - With a LIFO replay-buffer with TD(10) and planning horizon of 1 with 500 seed steps
-        </br>Videos of inference  
+        <br/>Videos of inference  
         ![](./videos/gen_replay_TD(10)_500.gif)
 
         Loss curves  
         ![](./images/gen_replay_TD(10)_500_total.png)
         ![](./images/gen_replay_TD(10)_500_value.png)
-        ![](.images/gen_replay_TD(10)_500_reward.png)
+        ![](./images/gen_replay_TD(10)_500_reward.png)
+        In this experiment, we changed TD(0) with TD(10) algorithm, keeping the number of seed steps same as before, viz 500. We noticed significantly better performance than TD(0). If we look at the losses, these are significantly lower by a factor of 1000. But we still see the losses are not converging. 
+        <br/>But we do see that the eval rewards have a better increasing trend here, and it actually achieves >-200 rewards when compared to previous experiment where rewards were lower than -600.
+        <br/>If we look at the video, we see there is similar trend as the previous experiment. It learns to hover but doesn't learn how to land and get a net positive reward. We suspect, even though we have made value loss better and more convergent by using a more stringent TD(10) algorithm, but the problem with the replay buffer still persists.
 
     - With a LIFO replay-buffer with TD(10) and planning horizon of 1 with 8000 seed steps
-        </br>Videos of inference  
+        <br/>Videos of inference  
         ![](./videos/gen_replay_TD(10).gif)
 
         Loss curves  
         ![](./images/gen_replay_TD(10)_total.png)
         ![](./images/gen_replay_TD(10)_value.png)
         ![](./images/gen_replay_TD(10)_reward.png)
+        
+
 
     - With a priority-replay-buffer with TD(0) and planning horizon of 5
         </br>Videos of inference 
