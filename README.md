@@ -167,6 +167,49 @@ Videos of inference
 Loss curves  
 ![](./images/tdmpc_ll_discrete_loss_curves.jpeg)
 
+- LunarLander - continuous
+
+    - With a LIFO replay-buffer with TD(0) and planning horizon of 5
+        </br>Videos of inference  
+        ![](./videos/gen_replay_TD(0)_horizon(5).gif)
+
+        Loss curves  
+        ![](./images/gen_replay_TD(0)_horizon(5)_total.png)
+        ![](./images/gen_replay_TD(0)_horizon(5)_value.png)
+        ![](./images/gen_replay_TD(0)_horizon(5)_reward.png)
+
+        Observations:
+        
+    - With a LIFO replay-buffer with TD(10) and planning horizon of 1 with 500 seed steps
+        </br>Videos of inference  
+        ![](./videos/gen_replay_TD(10)_500.gif)
+
+        Loss curves  
+        ![](./images/gen_replay_TD(10)_500_total.png)
+        ![](./images/gen_replay_TD(10)_500_value.png)
+        ![](.images/gen_replay_TD(10)_500_reward.png)
+
+    - With a LIFO replay-buffer with TD(10) and planning horizon of 1 with 8000 seed steps
+        </br>Videos of inference  
+        ![](./videos/gen_replay_TD(10).gif)
+
+        Loss curves  
+        ![](./images/gen_replay_TD(10)_total.png)
+        ![](./images/gen_replay_TD(10)_value_.png)
+        ![](./images/gen_replay_TD(10)_reward_.png)
+
+    - With a priority-replay-buffer with TD(0) and planning horizon of 5
+        </br>Videos of inference 
+        </br>At 38K steps 
+        ![](./videos/priority_replay_38000.gif)
+        </br>At 40k steps
+        ![](./videos/priority_replay_40000.gif)
+
+        Loss curves  
+        ![](./images/priority_replay_total.png)
+        ![](./images/priority_replay_value.png)
+        ![](./images/priority_replay_rewardpng.png)
+
 - Pendulum - continuous
 
 
