@@ -116,6 +116,8 @@ $$
     \mathcal{L}(\theta;\Gamma) = (c_1\Vert  R_\theta(z_i, a_i) - r_i \Vert_2^2) + (c_2 \Vert Q_\theta(z_i, a_i) - (r_i + \gamma Q_{\theta^-}(z_{i+1}, \pi_\theta(z_{i+1}))) \Vert_2^2) + (c_3 \Vert d_\theta(z_i) - h_{\theta^-}(s_{i+1}) \Vert_2^2 )
 $$
 
+TODO: explain this loss function.
+
 Observe that the latent consistency loss would allow the model to learn only the relevant dynamics without needing to reconstruct the observations.
 
 #### Implementation Details
