@@ -179,7 +179,9 @@ Loss curves
         ![](./images/gen_replay_TD(0)_horizon(5)_reward.png)
 
         Observations:
-        
+        First we trained our TD-MPC model with a FIFO replay buffer, 
+
+
     - With a LIFO replay-buffer with TD(10) and planning horizon of 1 with 500 seed steps
         </br>Videos of inference  
         ![](./videos/gen_replay_TD(10)_500.gif)
@@ -195,8 +197,8 @@ Loss curves
 
         Loss curves  
         ![](./images/gen_replay_TD(10)_total.png)
-        ![](./images/gen_replay_TD(10)_value_.png)
-        ![](./images/gen_replay_TD(10)_reward_.png)
+        ![](./images/gen_replay_TD(10)_value.png)
+        ![](./images/gen_replay_TD(10)_reward.png)
 
     - With a priority-replay-buffer with TD(0) and planning horizon of 5
         </br>Videos of inference 
