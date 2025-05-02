@@ -131,8 +131,13 @@ Our implementation differs from the TDMPC implementation in terms of predicting 
 
 To convert the continuous domain action distribution to discrete, we use mean-field approximation to compute the mapping from the Gaussian distribution used in planning to a Softmax distribution. In particular we use the **Mean-Field0 (mf0)** approximation presented in [3] to achieve this which is given by
 $$
+    e_k = SOFTMAX_k \frac{\mu}{\sqrt{1 + \lambda_0 \sigma_k^2}} 
+$$
+
+$$
     e_k = \texttt{SOFTMAX}_k \left(\frac{\mu}{\sqrt{1 + \lambda_0 \sigma_k^2}} \right)
 $$
+
 where, $k$ is the component of the softmax, $e_k$ is the $k^{\text{th}}$ component of the new softmax mapping, $\lambda_0$ is a parameter.
 
 ## Experiments
@@ -162,13 +167,16 @@ Loss curve for training the world and reward models :
 <br/>![](./images/ptm_atari_loss_curve.png)
 
 <br/>
-Videos of inference:  
-<br/>![](./videos/ptm_atari.gif) 
-<br/>![](./videos/ptm_atari_2.gif)
+Videos of inference:
+
+![](./videos/ptm_atari.gif)   
+![](./videos/ptm_atari_2.gif)  
 
 <br/>
 Reward curve for the inference:  
-<br/>![](./images/ptm_atari_rewards_curve.jpeg)
+<br/>
+
+![](./images/ptm_atari_rewards_curve.jpeg)
 
 ### Experiments performed using tdmpc   
 #### LunarLander - discrete
