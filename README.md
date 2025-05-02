@@ -12,7 +12,7 @@ We implemented the two strategies on two different environments.
 1. Control systems environment for continuous action space.
 2. Atari games environment for discrete action space.
 
-TD-MPC approach is defined for continuous action spaces and we implemented a mean-field approximation [@lu2021meanfieldapproximationgaussiansoftmaxintegral] to convert from a continuous Gaussian distribution to a Softmax distribution and present the results for two discrete environments.
+TD-MPC approach is defined for continuous action spaces and we implemented a mean-field approximation [3] to convert from a continuous Gaussian distribution to a Softmax distribution and present the results for two discrete environments.
 
 ## Methods explored
 
@@ -71,7 +71,7 @@ Layout:
 [x] loss function equations
 [] implementation peculiarities
 -->
-In this approach we reimplement Temporal Difference Model Predictive Control (TDMPC) [@hansen2022temporaldifferencelearningmodel] which uses Model Predictive Path Control [@williams2015modelpredictivepathintegral] for planning and Temporal Difference 0 (TD0) to train the model. Unlike the method mentioned above the main advantage claimed by TDMPC is to learn embeddings from high dimensional pixel space without learning unnecessary details like shading.
+In this approach we reimplement Temporal Difference Model Predictive Control (TDMPC) [1] which uses Model Predictive Path Control [2] for planning and Temporal Difference 0 (TD0) to train the model. Unlike the method mentioned above the main advantage claimed by TDMPC is to learn embeddings from high dimensional pixel space without learning unnecessary details like shading.
 
 The model consists of
 - Q-value function estimate $Q_\theta(a_t, s_t)$.
@@ -81,7 +81,7 @@ The model consists of
 - Stochastic policy network $\pi_{\theta}(z_t)$ which predicts a Gaussian distribution over the action space $\mathcal{A}$.
 
 #### Planning
-TD-MPC uses augmented version of Model Predictive Path Integral (MPPI) [@williams2015modelpredictivepathintegral]. In this planning procedure the action distribution over horizon of future moves is assumed to be a spherical Gaussian distribution with the policy network as a prior. The parameters ($\mu, \sigma$) are updated iteratively using an importance sampling of the top-k sampled trajectories which maximize the approximate $Q$-value. This equation is given as 
+TD-MPC uses augmented version of Model Predictive Path Integral (MPPI) [2]. In this planning procedure the action distribution over horizon of future moves is assumed to be a spherical Gaussian distribution with the policy network as a prior. The parameters ($\mu, \sigma$) are updated iteratively using an importance sampling of the top-k sampled trajectories which maximize the approximate $Q$-value. This equation is given as 
 
 $$ \phi_\Gamma \triangleq \mathbb{E}\left[\gamma^H Q_\theta(z_{H}, a_{H}) + \sum_{t=0}^{H-1} \gamma^t R_\theta(z_t, a_t)\right] $$ 
 
@@ -112,24 +112,28 @@ $$
 where, $\lambda$ is a hyper parameter
 
 $$
-    \mathcal{L}(\theta;\Gamma) = (c_1\Vert  R_\theta(z_i, a_i) - r_i \Vert_2^2) + (c_2 \Vert Q_\theta(z_i, a_i) - (r_i + \gamma Q_{\theta^-}(z_{i+1}, \pi_\theta(z_{i+1}))) \Vert_2^2) + (c_3 \Vert d_\theta(z_i) - h_{\theta^-}(s_{i+1}) \Vert_2^2 )
+    \mathcal{L}(\theta;\Gamma) = c_1 L_1 + c_2 L_2 + c_3 L_3 \\
+    L_1 = \Vert  R_\theta(z_i, a_i) - r_i \Vert_2^2 \\
+    L_2 = \Vert Q_\theta(z_i, a_i) - (r_i + \gamma Q_{\theta^-}(z_{i+1}, \pi_\theta(z_{i+1}))) \Vert_2^2 \\
+    L_3 = \Vert d_\theta(z_i) - h_{\theta^-}(s_{i+1}) \Vert_2^2 \\
 $$
-
-TODO: explain this loss function.
-
-Observe that the latent consistency loss would allow the model to learn only the relevant dynamics without needing to reconstruct the observations.
+where, $c_1, c_2, c_3$ are parameters, $L_1$ is the reward loss, $L_2$ is the TD(0) loss, and $L_3$ is the consistency loss. Observe that the latent consistency loss would allow the model to learn only the relevant dynamics without needing to reconstruct the observations.
 
 #### Implementation Details
 <!-- 
 [x] priority buffer
 [x] Predict std in policy network
-[] Mean-field approximation (discrete)
+[x] Mean-field approximation (discrete)
  -->
-In addition to the methods described in [@hansen2022temporaldifferencelearningmodel], the actual code is implemented with some tricks which are not mentioned in the paper. One of these is the use of a priority based replay buffer, where a score is computed as the L1 loss between the predicted Q value and the TD0 target Q value. We discuss the importance of using a priority based replay buffer in experiments. 
+In addition to the methods described in [1], the actual code is implemented with some tricks which are not mentioned in the paper. One of these is the use of a priority based replay buffer, where a score is computed as the L1 loss between the predicted Q value and the TD0 target Q value. We discuss the importance of using a priority based replay buffer in experiments. 
 
 Our implementation differs from the TDMPC implementation in terms of predicting the standard deviation using the policy network itself instead of using a linear schedule of standard deviation.
 
-To convert the continuous domain action distribution to discrete, we use a mean-field estimator [@lu2021meanfieldapproximationgaussiansoftmaxintegral]. <!-- TODO: fill mean field estimator from Bishop -->
+To convert the continuous domain action distribution to discrete, we use mean-field approximation to compute the mapping from the Gaussian distribution used in planning to a Softmax distribution. In particular we use the **Mean-Field0 (mf0)** approximation presented in [3] to achieve this which is given by
+$$
+    e_k = \texttt{SOFTMAX}_k \left(\frac{\mu}{\sqrt{1 + \lambda_0 \sigma_k^2}} \right)
+$$
+where, $k$ is the component of the softmax, $e_k$ is the $k^{\text{th}}$ component of the new softmax mapping, $\lambda_0$ is a parameter.
 
 ## Experiments
 
@@ -155,14 +159,16 @@ From loss curves, we can see that the world and reward model trained really well
 #### Atari 
 
 Loss curve for training the world and reward models :
-![](./images/ptm_atari_loss_curve.png)
+<br/>![](./images/ptm_atari_loss_curve.png)
 
+<br/>
 Videos of inference:  
-![](./videos/ptm_atari.gif) 
-![](./videos/ptm_atari_2.gif)
+<br/>![](./videos/ptm_atari.gif) 
+<br/>![](./videos/ptm_atari_2.gif)
 
+<br/>
 Reward curve for the inference:  
-![](./images/ptm_atari_rewards_curve.jpeg)
+<br/>![](./images/ptm_atari_rewards_curve.jpeg)
 
 ### Experiments performed using tdmpc   
 #### LunarLander - discrete
@@ -253,13 +259,13 @@ Loss curve
 
 ## Observation and conclusions
 
-The pretrained model with random shooting approach performed really well in the pendulum control environment. We found scaling to be simple and fast.
+In this project we have performed experiments with two model based RL methods and explore different techniques that improve performance in both continuous and discrete RL domains. 
 
-However, this method failed when implemented on atari games. This is mainly because the reward model did not generalize well and since the random exploration makes the reward events rare, the dataset distribution is sparse. One more reason is that the atari games if the planning horizon does not cover the reward event then the evalution of action sequences results in collapse and bad action choices.
+The pretrained model with random shooting approach performed really well in the pendulum control environment. We found scaling to be simple and fast. However, this method failed when implemented on atari games. This is mainly because the reward model did not generalize well and since the random exploration makes the reward events rare, the dataset distribution is sparse. One more reason is that the atari games if the planning horizon does not cover the reward event then the evaluation of action sequences results in collapse and bad action choices.
 
-
-TODO: explain the observation and conclusion for TD-MPC`
-
+We observed that TD-MPC is heavily dependent on the quality of samples in the replay buffer and we saw an improvement with increasing temporal difference in the TD loss from TD(0) to TD(10). 
 
 ## References
-<!-- TODO number the references later -->
+[1] Nicklas Hansen and Xiaolong Wang and Hao Su, Temporal Difference Learning for Model Predictive Control, 2022. URL [https://arxiv.org/abs/2203.04955](https://arxiv.org/abs/2203.04955)<br/>
+[2] Grady Williams and Andrew Aldrich and Evangelos Theodorou, Model Predictive Path Integral Control using Covariance Variable Importance Sampling, 2015. URL [https://arxiv.org/abs/1509.01149](https://arxiv.org/abs/1509.01149) <br/>
+[3] Zhiyun Lu and Eugene Ie and Fei Sha, Mean-Field Approximation to Gaussian-Softmax Integral with Application to Uncertainty Estimation, 2021. URL [https://arxiv.org/abs/2006.07584](https://arxiv.org/abs/2006.07584) <br/>
