@@ -112,10 +112,14 @@ $$
 where, $\lambda$ is a hyper parameter
 
 $$
-    \mathcal{L}(\theta;\Gamma) = c_1 L_1 + c_2 L_2 + c_3 L_3 \\
-    L_1 = \Vert  R_\theta(z_i, a_i) - r_i \Vert_2^2 \\
-    L_2 = \Vert Q_\theta(z_i, a_i) - (r_i + \gamma Q_{\theta^-}(z_{i+1}, \pi_\theta(z_{i+1}))) \Vert_2^2 \\
-    L_3 = \Vert d_\theta(z_i) - h_{\theta^-}(s_{i+1}) \Vert_2^2 \\
+    \mathcal{L}(\theta;\Gamma) = c_1 L_1 + c_2 L_2 + c_3 L_3
+
+$$
+
+$$
+    L_1 = \Vert  R_\theta(z_i, a_i) - r_i \Vert_2^2 
+    L_2 = \Vert Q_\theta(z_i, a_i) - (r_i + \gamma Q_{\theta^-}(z_{i+1}, \pi_\theta(z_{i+1}))) \Vert_2^2 
+    L_3 = \Vert d_\theta(z_i) - h_{\theta^-}(s_{i+1}) \Vert_2^2 
 $$
 where, $c_1, c_2, c_3$ are parameters, $L_1$ is the reward loss, $L_2$ is the TD(0) loss, and $L_3$ is the consistency loss. Observe that the latent consistency loss would allow the model to learn only the relevant dynamics without needing to reconstruct the observations.
 
