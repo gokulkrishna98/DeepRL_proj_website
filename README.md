@@ -119,6 +119,10 @@ $$
 
 $$
     L_1 = \Vert  R_\theta(z_i, a_i) - r_i \Vert_2^2 
+$$
+
+
+$$
     L_2 = \Vert Q_\theta(z_i, a_i) - (r_i + \gamma Q_{\theta^-}(z_{i+1}, \pi_\theta(z_{i+1}))) \Vert_2^2 
     L_3 = \Vert d_\theta(z_i) - h_{\theta^-}(s_{i+1}) \Vert_2^2 
 $$
