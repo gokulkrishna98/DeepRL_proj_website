@@ -65,7 +65,6 @@ A CNN that takes $ẑ_{t+1}$ and reconstructs $state_{t+1}$ (i.e., the next fram
 Compute loss between $statê_{t+1}$ and actual $state_{t+1}$ using Mean squared error loss.
 
 ### TD-MPC approach
-TODO: by subhojeet or eshwar
 <!-- 
 Layout: 
 [x] approach overview
