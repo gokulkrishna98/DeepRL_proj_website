@@ -223,9 +223,9 @@ Reward curve for the inference:
     ![](./images/priority_replay_total.png)
     ![](./images/priority_replay_value.png)
     ![](./images/priority_replay_rewardpng.png)
-    We implemented a UCB-based priority replay buffer, which along with the total_loss also backpropogates a priority loss trained on the Q-value, and then computes the sample probablity over the observation set of episodes. This will ensure that once the model starts getting confident in certain observations, hope is the model will get past the local minima of hovering. 
-    If we look at the loss curves and reward curves we see, rewards are consistenly better than the previous run, and at around 20k steps, we see it falls, as it tries new observations but there is still a positive trend in the eval data.
-    Finally looking at the uploaded gifs, we can see at 38k steps, the model is consistently better at just hovering and accumulating >-200 reward. But at 40k steps, we believe that now priority loss actually starts the model to skew towards the tail-end observations forcing the model to actually try to land, which results in slightly worse rewards but we can see it actually trying to learn how to land efficiently by firing left and right boosters to reduce the elevation. 
+    <br/>We implemented a UCB-based priority replay buffer, which along with the total_loss also backpropogates a priority loss trained on the Q-value, and then computes the sample probablity over the observation set of episodes. This will ensure that once the model starts getting confident in certain observations, hope is the model will get past the local minima of hovering. 
+    <br/>If we look at the loss curves and reward curves we see, rewards are consistenly better than the previous run, and at around 20k steps, we see it falls, as it tries new observations but there is still a positive trend in the eval data.
+    <br/>Finally looking at the uploaded gifs, we can see at 38k steps, the model is consistently better at just hovering and accumulating >-200 reward. But at 40k steps, we believe that now priority loss actually starts the model to skew towards the tail-end observations forcing the model to actually try to land, which results in slightly worse rewards but we can see it actually trying to learn how to land efficiently by firing left and right boosters to reduce the elevation. 
 
 - Pendulum - continuous
 
