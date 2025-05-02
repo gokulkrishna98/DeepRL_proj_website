@@ -130,9 +130,7 @@ In addition to the methods described in [1], the actual code is implemented with
 Our implementation differs from the TDMPC implementation in terms of predicting the standard deviation using the policy network itself instead of using a linear schedule of standard deviation.
 
 To convert the continuous domain action distribution to discrete, we use mean-field approximation to compute the mapping from the Gaussian distribution used in planning to a Softmax distribution. In particular we use the **Mean-Field0 (mf0)** approximation presented in [3] to achieve this which is given by
-$$
-    e_k = SOFTMAX_k \frac{\mu}{\sqrt{1 + \lambda_0 \sigma_k^2}} 
-$$
+
 
 $$
     e_k = \texttt{SOFTMAX}_k \left(\frac{\mu}{\sqrt{1 + \lambda_0 \sigma_k^2}} \right)
