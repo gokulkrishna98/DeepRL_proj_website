@@ -132,11 +132,10 @@ Our implementation differs from the TDMPC implementation in terms of predicting 
 
 To convert the continuous domain action distribution to discrete, we use a mean-field estimator [@lu2021meanfieldapproximationgaussiansoftmaxintegral]. <!-- TODO: fill mean field estimator from Bishop -->
 
-## Experiments and Videos
+## Experiments
 
-Experiments performed using pre-trained model and random sampling
-
-### Pendulum
+### Experiments with pre-trained model and random Sampling
+#### Pendulum
 
 World model loss curves:  
 ![ptm_pend_wm_lc](./images/ptm_pend_world_model_loss_curve.png)
@@ -150,9 +149,9 @@ Videos on pendulum
 
 ![vid-pend-ptm-2](./videos/ptm_pendulum_2.gif)
 
-### LunarLander
+#### LunarLander
 
-### Atari 
+#### Atari 
 
 Loss curve for training the world and reward models :
 ![](./images/ptm_atari_loss_curve.png)
@@ -164,15 +163,69 @@ Videos of inference:
 Reward curve for the inference:  
 ![](./images/ptm_atari_rewards_curve.jpeg)
 
-Experiments performed using tdmpc   
-- LunarLander - discrete 
+### Experiments performed using tdmpc   
+#### LunarLander - discrete
+**Videos of inference**
+<br/>![](./videos/tdmpc_ll_discrete.gif)
+
+**Loss curves**
+<br/>![](./images/tdmpc_ll_discrete_loss_curves.jpeg)
+
+#### LunarLander - continuous
+- With a LIFO replay-buffer with TD(0) and planning horizon of 5
+    </br>Videos of inference  
+    ![](./videos/gen_replay_TD(0)_horizon(5).gif)
+
+    Loss curves  
+    ![](./images/gen_replay_TD(0)_horizon(5)_total.png)
+    ![](./images/gen_replay_TD(0)_horizon(5)_value.png)
+    ![](./images/gen_replay_TD(0)_horizon(5)_reward.png)
+
+    Observations:
+    First we trained our TD-MPC model with a FIFO replay buffer with a buffer capacity of 150,000 episodes. If we look a the curve, we see that the performance is quite poor, the training loss are saturated at 15k steps and the eval rewards drop to -600, which is worse than random. 
+    <br/>If we look closely at the eval video, we can see in the start the lander hovers, but it degrades quickly. Our hypothesis is, since our replay buffer is filled using the states that our model predicts and since they use TD(0) this makes the model very short-sighted and this tight-coupling between the replay buffer and the model, makes the performance good for early steps but it degrades for later steps since our replay buffer is tightly coupled we never get those observations in the buffer, and the model performs poorly for later steps.
+    <br/>To verify this hypothesis of ours, we tried to train with TD(10) to increase the horizon, as well as we trained with larger seed steps to ensure that we have quality observations in the replay buffer.
+    Finally, we also wrote a priority-based replay buffer to encourage the model to train on less confident observations to have better exploration.
+
+- With a LIFO replay-buffer with TD(10) and planning horizon of 1 with 500 seed steps
+    <br/>Videos of inference  
+    ![](./videos/gen_replay_TD(10)_500.gif)
+
+    Loss curves  
+    ![](./images/gen_replay_TD(10)_500_total.png)
+    ![](./images/gen_replay_TD(10)_500_value.png)
+    ![](./images/gen_replay_TD(10)_500_reward.png)
+    In this experiment, we changed TD(0) with TD(10) algorithm, keeping the number of seed steps same as before, viz 500. We noticed significantly better performance than TD(0). If we look at the losses, these are significantly lower by a factor of 1000. But we still see the losses are not converging. 
+    <br/>But we do see that the eval rewards have a better increasing trend here, and it actually achieves >-200 rewards when compared to previous experiment where rewards were lower than -600.
+    <br/>If we look at the video, we see there is similar trend as the previous experiment. It learns to hover but doesn't learn how to land and get a net positive reward. We suspect that, even though we have made value loss better and more convergent by using a more stringent TD(10) algorithm, but the problem with the replay buffer still persists, and model doesn't get trained on later stages of the episode.
+
+- With a LIFO replay-buffer with TD(10) and planning horizon of 1 with 8000 seed steps
+    <br/>Videos of inference  
+    ![](./videos/gen_replay_TD(10).gif)
+
+    Loss curves  
+    ![](./images/gen_replay_TD(10)_total.png)
+    ![](./images/gen_replay_TD(10)_value.png)
+    ![](./images/gen_replay_TD(10)_reward.png)
+    Now we increased the seed steps from 500 -> 8000. We see faster convergence to greater than -100 average episode reward on evaluation. We also  see more stable trend on all the loss curves, proving that our hypothesis is correct. Exploration of TD-MPC algorithm is tightly coupled with how good the observation space in replay buffer is, basically TD-MPC on it's own is very slow in exploration and depends upon how rich our replay buffer is to begin with. 
+    <br/> If we look at the eval rewards we start getting consistently >-150 as rewards, the rewards are still negative, as the model is still plagued from less observations with end steps of an episode, and model is stuck in a local minima. If we see the video it is more evident, as model has learnt that its better to hover and get some negative reward that to actually crashing and getting penalized. 
+    </br> In order to address this issue, we thought of experimenting with a different implementation of replay buffer, wehre we can have wight sample observations from a episode based on how confident the model is on those observations. Our hope is, once the model is very confident in the observations in the early stages of episode which helps the model to learn a hovering heuristic. The model will start exploring on the tail-end observations where it is not very confident, and we will see better performance.
 
 
-Videos of inference  
-![](./videos/tdmpc_ll_discrete.gif)
+- With a priority-replay-buffer with TD(0) and planning horizon of 5
+    </br>Videos of inference 
+    </br>At 38K steps 
+    <br/>![](./videos/priority_replay_38000.gif)
+    </br>At 40k steps
+    <br/>![](./videos/priority_replay_40000.gif)
 
-Loss curves  
-![](./images/tdmpc_ll_discrete_loss_curves.jpeg)
+    Loss curves  
+    ![](./images/priority_replay_total.png)
+    ![](./images/priority_replay_value.png)
+    ![](./images/priority_replay_rewardpng.png)
+    We implemented a UCB-based priority replay buffer, which along with the total_loss also backpropogates a priority loss trained on the Q-value, and then computes the sample probablity over the observation set of episodes. This will ensure that once the model starts getting confident in certain observations, hope is the model will get past the local minima of hovering. 
+    If we look at the loss curves and reward curves we see, rewards are consistenly better than the previous run, and at around 20k steps, we see it falls, as it tries new observations but there is still a positive trend in the eval data.
+    Finally looking at the uploaded gifs, we can see at 38k steps, the model is consistently better at just hovering and accumulating >-200 reward. But at 40k steps, we believe that now priority loss actually starts the model to skew towards the tail-end observations forcing the model to actually try to land, which results in slightly worse rewards but we can see it actually trying to learn how to land efficiently by firing left and right boosters to reduce the elevation. 
 
 - Pendulum - continuous
 
