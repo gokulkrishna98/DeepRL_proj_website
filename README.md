@@ -111,10 +111,11 @@ $$
 
 where, $\lambda$ is a hyper parameter
 
-$$
-    \mathcal{L}(\theta;\Gamma) = c_1 L_1 + c_2 L_2 + c_3 L_3
 
 $$
+    \mathcal{L}(\theta;\Gamma) = c_1 L_1 + c_2 L_2 + c_3 L_3
+$$
+
 
 $$
     L_1 = \Vert  R_\theta(z_i, a_i) - r_i \Vert_2^2 
