@@ -2,11 +2,11 @@
 
 
 ## Abstract
-It is believed that Traditional TD based approach for RL suffers from sample ineffiency. To solve this issue, it is theoretically believed that the model based approach of 'planning' the action sequences (trajectories) and get the approximate reward by forward simulating (or dreaming) can solve this problem. In this project, we attempt to see how the model based approach performs for continuos and discrete action spaces. 
+Traditional model free approaches for RL suffers from sample inefficiency, face scaling issues with compute, and lack interpretablity. Model based approaches on the other hand make use of _planning_ action sequences utilizing the learnt world and reward models. They also have generalize better over different domains and are amenable to encoding assumptions about the environment into the world model. In this project, we attempt to see how the model based approach performs for continuos and discrete action spaces. 
 
 We evaluate two strategies:  
 1. Pre-Trained World and Reward model with Randomized Action Planning
-2. TD-MPC approach. 
+2. Temporal Difference Model Predictive Control (TD-MPC) approach. 
 
 We implemented the two strategies on two different environments.
 1. Control systems environment for continuous action space.
