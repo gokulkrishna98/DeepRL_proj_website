@@ -148,6 +148,8 @@ Videos on pendulum
 
 ![vid-pend-ptm-2](./videos/ptm_pendulum_2.gif)
 
+From loss curves, we can see that the world and reward model trained really well. Also we can see the random shooting performs good in the pendulum use-case.
+
 #### LunarLander
 
 #### Atari 
@@ -169,6 +171,9 @@ Reward curve for the inference:
 
 **Loss curves**
 <br/>![](./images/tdmpc_ll_discrete_loss_curves.jpeg)
+
+We see that the reward model trained poorly, we suspect the reason is that dataset creation through random exploration provides very poor baseline and making reward events sparse.
+From the video of inference on atari games, we can see that model does not perform well.
 
 #### LunarLander - continuous
 - <U>Implementation 1:</U> <B>With a LIFO replay-buffer with TD(0) and planning horizon of 5</B>
@@ -247,12 +252,13 @@ Loss curve
 ![](./images/tdmpc_atari_loss_curve.png)
 
 ## Observation and conclusions
-TODO: (We will do it on wednesday)
-- Reward curves
-- Possible reasons for failure and performance. 
 
-TODO: (We will do it on wednesday)
-What we learnt from the experiments and what couldve been done.
+The pretrained model with random shooting approach performed really well in the pendulum control environment. We found scaling to be simple and fast.
+
+However, this method failed when implemented on atari games. This is mainly because the reward model did not generalize well and since the random exploration makes the reward events rare, the dataset distribution is sparse. One more reason is that the atari games if the planning horizon does not cover the reward event then the evalution of action sequences results in collapse and bad action choices.
+
+
+TODO: explain the observation and conclusion for TD-MPC`
 
 
 ## References
