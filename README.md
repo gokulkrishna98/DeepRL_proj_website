@@ -89,7 +89,7 @@ $$ \phi_\Gamma \triangleq \mathbb{E}\left[\gamma^H Q_\theta(z_{H}, a_{H}) + \sum
 where, 
 $a_t \sim \mathcal{N}(\mu_t^{j-1}, (\sigma_t^{j-1})^2I)$ 
 
-In a loop start with $N$ trajectories of horizon $H$ from $\mathcal{N}(\mu^{j-1}, (\sigma^{j-1})^2I)$ and $N_\pi$ trajectories for horizon $H$ from $\pi_\theta$ and $d_\theta$. Compute $\phi_\Gamma$ for the recorded $N+N_\pi$ trajectories, and get the top-$k$ trajectories notated here as $\Gamma^\star$. Compute $\mu^j, \sigma^j$ for the next iteration as
+In a loop start with $N$ trajectories of horizon $H$ from $\mathcal{N}(\mu^{j-1}, (\sigma^{j-1})^2I)$ and $N_\pi$ trajectories for horizon $H$ from $\pi_\theta$ and $d_\theta$. Compute $\phi_\Gamma$ for the recorded $N+N_\pi$ trajectories, and get the top-k trajectories notated here as $\Gamma^\star$. Compute $\mu^j, \sigma^j$ for the next iteration as
 
 $$
     \mu^j = \frac{\sum_{i=1}^k e^{\tau(\phi_{\Gamma^\star,i})} \Gamma_i^\star}{\sum_{i=1}^k e^{\tau(\phi_{\Gamma^\star, i})}} 
